@@ -22,5 +22,5 @@ async def wait_n(n: int, max_delay: int) -> List[float]:
 
     # Create queue with results depending on the function have the result ready
     for item in asyncio.as_completed(items):
-        delays.append(await items)
+        delays.append(await item)
     return delays
