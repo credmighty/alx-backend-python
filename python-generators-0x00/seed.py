@@ -97,16 +97,4 @@ def insert_data(connection, data):
         print(f"Missing column in CSV: {e}")
     finally:
         cursor.close()
-
-def stream_rows(connection):
-    try:
-        cursor = connection.cursor(dictionary=True) # return rows as dictionaries
-        cursor.execute("SELECT * FROM user_data")
-        for row in cursor:
-            yield row
-        cursor.close()
-    except Error as e:
-        print(f"Error streaming data: {e}")
-    finally:
-        if cursor:
             cursor.close()
