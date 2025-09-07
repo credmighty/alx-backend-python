@@ -4,7 +4,8 @@ from seed import connect_to_prodev
 from mysql.connector import Error
 
 # Generator function to stream user ages
-def stream_user_ages(connection):
+def stream_user_ages():
+    connection = connect_to_prodev()
     try:
         cursor = connection.cursor(dictionary=True)
         cursor.execute("SELECT age FROM user_data")
@@ -18,7 +19,8 @@ def stream_user_ages(connection):
             cursor.close()
 
 # Function to calculate average age using the generator
-def calculate_average_age(connection):
+def calculate_average_age():
+    connection = connect_to_prodev()
     try:
         total_age = 0
         count = 0
