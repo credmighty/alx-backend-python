@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sqlite3
 import functools
-
+from datetime import datetime
 #### decorator to lof SQL queries
 
  """ YOUR CODE GOES HERE"""
@@ -10,7 +10,7 @@ import functools
      def wrapper_log_queries(*args, **kwargs):
          log_args = args[0] if args else kwargs.get("query", None)
          if log_args:
-             print(f"Executing SQL query: {log_query}")
+             print(f"Executing SQL query: {log_query} @ {datetime.now()}")
          return func(*args, **kwargs)
      return wrapper_log_queries
 
