@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import sqlite3
-from seed import connect_to_prodev
+from alx-airbnb-database.database-script-0x02.seed import connect_to_prodev
 
 class DatabaseConnection(object):
     def __init__(self, file_name, method):
