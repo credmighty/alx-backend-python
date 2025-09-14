@@ -1,17 +1,22 @@
 import sqlite3 
 import functools
+from datetime import datetime
 
 
 def with_db_connection(func):
-    """ your code goes here""" 
+    """ your code goes here"""
+    @functools.wraps(func)
     def wrapper_db_connection(*args, **kwargs):
+        conn = sqlite3.connect('users.db')
+        time_stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         try:
-            conn = sqlite3.connect('users.db')
             result = func(conn, *args, **kwargs)
+            print(f"[{time_stamp} Function '{func.__name__}' executed successfully]")
             return result
         finally:
             if conn:
                 conn.close()
+                print(f"[{time_stamp}] Database connection closed.")
     return wrapper_db_connection
 
 @with_db_connection 
