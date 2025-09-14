@@ -1,7 +1,7 @@
+#!/usr/bin/python3
 import sqlite3 
 import functools
 from datetime import datetime
-
 
 def with_db_connection(func):
     """ your code goes here"""
