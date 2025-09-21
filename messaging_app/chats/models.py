@@ -94,7 +94,7 @@ class Message(models.Model):
         return f"Message from {self.sender_id}: {self.message_body} at {sent_at}"
 
 
-class conversation(models.Model):
+class Conversation(models.Model):
     converssation_id = models.UUIDField(
             primary_key=True,
             default=uuid.uuid4,
