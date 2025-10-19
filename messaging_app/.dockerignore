@@ -1,0 +1,20 @@
+#Ignore the Python virtual environment
+
+venv/
+
+#Ignore local Django database file (should not be in the image)
+db.sqlite3
+
+#Ignore common project environment files
+.env
+.DS_Store
+.vscode/
+
+#Ignore Git files and history
+.git
+.gitignore
+
+#Ignore Python runtime/cache artifacts
+pycache/
+*.pyc
+*.log

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-app-green
+  labels:
+    app: messaging-app-bg
+    color: green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: messaging-app-bg
+      color: green
+  template:
+    metadata:
+      labels:
+        app: messaging-app-bg
+        color: green
+        tier: web
+    spec:
+      containers:
+      - name: messaging-app-green-container
+        image: alx-messaging-app:v2.0
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        env:
+          - name: SECRET_KEY
+            value: "django-insecure-fly^&=w7bmsb7g-44npmvvwn#a!gj%5)kwfvssi)dmg5adjm46"
+          - name: MYSQL_DB
+            value: "messaging_db"
+          - name: MYSQL_USER
+            value: "messaging_user"
+          - name: MYSQL_PASSWORD
+            value: "supersecurepassword_db"
+          - name: DB_HOST
+            value: "db-service" 
+          - name: DB_PORT
+            value: "3306"

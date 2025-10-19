@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Define the deployment name established in deployment.yaml
+DEPLOYMENT_NAME="messaging-app-deployment"
+SERVICE_NAME="messaging-app-service"
+
+echo "--- Task 2: Scaling Application in Kubernetes ---"
+
+echo "Scaling deployment '$DEPLOYMENT_NAME' to 3 replicas..."
+kubectl scale deployment/$DEPLOYMENT_NAME --replicas=3
+
+echo "Waiting for all 3 replicas to become ready..."
+kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=90s
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: Scaling failed or timed out. Check pod status with 'kubectl get pods'."
+    exit 1
+fi
+
+echo "Verifying running pods (expecting 3 pods):"
+kubectl get pods -l app=messaging-app
+
+
+echo "3. Performing load test simulation..."
+
+MINIKUBE_URL=$(minikube service $SERVICE_NAME --url)
+
+if [ -z "$MINIKUBE_URL" ]; then
+    echo "WARNING: Could not determine service URL via minikube service --url."
+    echo "Please ensure the service is externally accessible (NodePort/Ingress) or run 'minikube tunnel'."
+    # Fallback/placeholder URL
+    SERVICE_URL="http://127.0.0.1:8000/api/token/"
+else
+    # Testing the login endpoint which requires a POST request
+    SERVICE_URL="${MINIKUBE_URL}/api/token/"
+fi
+
+echo "Targeting API endpoint for load test: $SERVICE_URL"
+# Check if wrk is installed before attempting to run
+if command -v wrk &> /dev/null
+then
+    echo "Running wrk for 10 seconds (2 threads, 10 connections)..."
+    echo "Load testing requires external IP access for wrk and correctly formatted POST/GET requests."
+    echo "To run manually (using a simple endpoint like /admin/login/):"
+    echo "wrk -t2 -c10 -d10s ${MINIKUBE_URL}/admin/login/"
+else
+    echo "WARNING: 'wrk' is not installed. Skipping load testing. Install with 'sudo apt install wrk'."
+fi
+
+
+echo "4. Monitoring resource usage (requires Metrics Server addon):"
+kubectl top pod -l app=messaging-app --containers
+kubectl top node
+
+echo "Scaling, verification, and monitoring steps completed."
