@@ -1,0 +1,71 @@
+pipeline {
+    agent any
+
+    environment {
+        // You can define global environment variables here
+        BUILD_ENV = 'development'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'my-credentials-id',
+                    url: 'git@github.com:Sheyzie/alx-backend-python.git'
+            }
+        }
+
+        stage('Get Source Code') {
+            steps {
+                echo 'Getting source code from github...'
+                sh 'git pull'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing depencies...'
+                sh 'pip3 install -r messaging_app/requirements.txt'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building the application...'
+                // Example build command
+                sh 'docker build -t messaging_app:1.0'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                // Example test command
+                sh './run_tests.sh'
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo "Deploying to ${BUILD_ENV} environment..."
+                // Example deploy command
+                sh './deploy.sh'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+    }
+}
